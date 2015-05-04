@@ -26,6 +26,7 @@
        "scripts/sshd.sh",
        "scripts/vagrant.sh",
        "scripts/virtualbox.sh",
+       "scripts/acpid.sh",
        "scripts/scrub.sh",
        "scripts/spacesaver.sh"
      ],
