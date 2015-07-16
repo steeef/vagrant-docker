@@ -48,6 +48,27 @@
         - { regexp: '^UseDNS', line: 'UseDNS no' }
         - { regexp: '^GSSAPIAuthentication', line: 'GSSAPIAuthentication no' }
 
+    - name: create vagrant user
+      user: name=vagrant state=present groups=wheel createhome=yes
+
+    - name: vagrant password
+      shell: echo vagrant | passwd vagrant --stdin
+
+    - name: vagrant sudoers
+      lineinfile: >
+        dest=/etc/sudoers.d/vagrant
+        line="{{ item }}"
+        state=present
+        create=yes
+        owner=root
+        group=root
+        mode=0400
+        validate='visudo -cf %s'
+      with_items:
+        - "Defaults:%vagrant !requiretty"
+        - "Defaults:%vagrant env_keep += SSH_AUTH_SOCK"
+        - "%vagrant ALL=(ALL) NOPASSWD: ALL"
+
     # Vagrant SSH configuration.
     - name: Configure Vagrant .ssh directory.
       file: path=/home/vagrant/.ssh state=directory owner=vagrant group=vagrant mode=700
@@ -103,3 +124,41 @@
       with_items:
         - '^HWADDR'
         - '^UUID'
+
+    - name: truncate files
+      shell: >
+        > "{{ item }}"
+      failed_when: False
+      with_items:
+        - "/etc/resolv.conf"
+        - "/var/log/wtmp"
+        - "/var/log/cron"
+        - "/var/log/dmesg"
+        - "/var/log/dmesg.old"
+        - "/var/log/lastlog"
+        - "/var/log/secure"
+        - "/var/log/messages"
+        - "/var/log/maillog"
+
+    - name: shred files
+      shell: >
+        shred -uv {{ item }}
+      failed_when: False
+      with_items:
+        - "/tmp/*"
+        - "/var/tmp/*"
+        - "/tmp/.*"
+        - "/var/lib/systemd/random-seed"
+        - "/var/log/audit/audit.log"
+        - "/root/.lesshst"
+        - "/root/.*history"
+        - "/etc/ssh/*_key"
+        - "/etc/ssh/*_key.pub"
+
+    - name: unset root history
+      shell: unset HISTFILE
+
+    - name: zero out free space
+      shell: >
+        dd if=/dev/zero of=/deleteme bs=1M &&
+        rm -f /deleteme
