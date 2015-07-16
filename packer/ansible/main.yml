@@ -44,18 +44,15 @@
         line="{{ item.line }}"
         state=present
       with_items:
-        - { regexp: '^UseDNS', line: 'UseDNS no' }
-        - { regexp: '^GSSAPIAuthentication', line: 'GSSAPIAuthentication no' }
+        - { regexp: '^#?\s*UseDNS', line: 'UseDNS no' }
+        - { regexp: '^#?\s*GSSAPIAuthentication', line: 'GSSAPIAuthentication no' }
+        - { regexp: '^#?\s*PermitRootLogin', line: 'PermitRootLogin no' }
 
     - name: create vagrant user
       user: name=vagrant state=present groups=wheel createhome=yes
 
     - name: vagrant password
       shell: echo vagrant | passwd vagrant --stdin
-
-    - name: root password
-      shell: >
-        date +%s | sha256sum | base64 | head -c 32 | passwd root --stdin
 
     - name: vagrant sudoers
       lineinfile: >
