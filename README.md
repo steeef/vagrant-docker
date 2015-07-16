@@ -1,7 +1,7 @@
 # packer-vagrant-centos-7-1503-01-x86_64-minimal
 
 ## Changes
-I've used Ansible playbooks from
+Instead of the shell provisioner, I'm using ansible-local, with playbooks from:
 https://github.com/geerlingguy/ansible-role-packer-rhel
 
 Security:
