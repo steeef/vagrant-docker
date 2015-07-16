@@ -1,7 +1,5 @@
 ---
 # file: ansible/main.yml
-#
-# grabbed from https://github.com/geerlingguy/ansible-role-packer-rhel
 
 - hosts: all
   sudo: yes
