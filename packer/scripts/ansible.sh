@@ -1,6 +1,8 @@
 #!/bin/bash -eux
-# debug yum http calls
-export URLGRABBER_DEBUG=1
-# Add the EPEL repository and install Ansible.
+# configure yum with yum-config-manager
+yum -y install yum-utils
+yum-config-manager --setopt="sslverify=${yum_sslverify}" --save
+[ -n "${http_proxy}" ] && yum-config-manager --setopt="proxy=${http_proxy}" --save
+
 yum -y install epel-release
 yum -y install ansible python-setuptools
