@@ -1,6 +1,6 @@
 ---
 - name: Get VirtualBox version.
-  shell: cat /home/vagrant/.vbox_version
+  shell: cat /root/.vbox_version
   register: virtualbox_version
 
 - name: Mount VirtualBox guest additions ISO.

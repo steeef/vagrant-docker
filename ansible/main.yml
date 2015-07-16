@@ -2,7 +2,8 @@
 # file: ansible/main.yml
 
 - hosts: all
-  sudo: yes
+  sudo: no
+  connection: local
   gather_facts: yes
   tasks:
     - name: Get the current kernel release.
@@ -52,6 +53,10 @@
     - name: vagrant password
       shell: echo vagrant | passwd vagrant --stdin
 
+    - name: root password
+      shell: >
+        date +%s | sha256sum | base64 | head -c 32 | passwd root --stdin
+
     - name: vagrant sudoers
       lineinfile: >
         dest=/etc/sudoers.d/vagrant
@@ -81,7 +86,7 @@
 
     # VirtualBox tools installation.
     - name: Check if VirtualBox is running the guest VM.
-      stat: path=/home/vagrant/.vbox_version
+      stat: path=/root/.vbox_version
       register: virtualbox_check
 
     - include: virtualbox.yml
@@ -158,5 +163,6 @@
 
     - name: zero out free space
       shell: >
-        dd if=/dev/zero of=/deleteme bs=1M &&
+        dd if=/dev/zero of=/deleteme bs=1M;
         rm -f /deleteme
+      failed_when: False
