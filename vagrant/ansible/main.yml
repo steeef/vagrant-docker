@@ -14,11 +14,11 @@
       user: >
         name=vagrant
         append=yes
-        groups=docker
+        groups=dockerroot
         state=present
     - name: "enable services"
       service: name="{{ item }}" state=running enabled=yes
       with_items:
-        - ntp
+        - ntpd
         - acpid
         - docker
