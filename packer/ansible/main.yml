@@ -54,6 +54,13 @@
     - name: vagrant password
       shell: echo vagrant | passwd vagrant --stdin
 
+    - name: sudoers
+      lineinfile: >
+        dest=/etc/sudoers
+        regexp='^Defaults\s+requiretty'
+        state=absent
+        validate='visudo -cf %s'
+
     - name: vagrant sudoers
       lineinfile: >
         dest=/etc/sudoers.d/vagrant
