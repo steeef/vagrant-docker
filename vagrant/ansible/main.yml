@@ -4,27 +4,43 @@
   tasks:
     - name: "yum update"
       yum: name=* state=latest
+
     - name: "yum install packages"
       yum: name="{{ item }}" state=present
       with_items:
         - ntp
         - acpid
         - docker
+        - python-pip
+
+    - name: pip install dependencies
+      pip: name="{{ item }}" state=present
+      with_items:
+        - 'docker-py'
+
     - name: "add vagrant to docker group"
       user: >
         name=vagrant
         append=yes
         groups=dockerroot
         state=present
+
     - name: "docker daemon options"
       lineinfile: >
         dest=/etc/sysconfig/docker
         line="OPTIONS='--selinux-enabled -G dockerroot'"
         state=present
         regexp="^OPTIONS="
+
+    - name: "set timezone UTC"
+      command: /usr/bin/timedatectl set-timezone UTC
+
     - name: "enable services"
       service: name="{{ item }}" state=running enabled=yes
       with_items:
         - ntpd
         - acpid
         - docker
+
+    - name: "timedatectl use ntp"
+      command: /usr/bin/timedatectl set-ntp true
