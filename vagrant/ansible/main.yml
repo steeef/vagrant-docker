@@ -16,6 +16,12 @@
         append=yes
         groups=dockerroot
         state=present
+    - name: "docker daemon options"
+      lineinfile: >
+        dest=/etc/sysconfig/docker
+        line="OPTIONS='--selinux-enabled -G dockerroot'"
+        state=present
+        regexp="^OPTIONS="
     - name: "enable services"
       service: name="{{ item }}" state=running enabled=yes
       with_items:
