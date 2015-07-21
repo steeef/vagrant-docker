@@ -14,9 +14,7 @@
         - python-pip
 
     - name: pip install dependencies
-      pip: name="{{ item }}" state=present
-      with_items:
-        - 'docker-py'
+      pip: name="docker-py" state=present
 
     - name: "add vagrant to docker group"
       user: >
@@ -44,3 +42,28 @@
 
     - name: "timedatectl use ntp"
       command: /usr/bin/timedatectl set-ntp true
+
+
+# let's do some docker
+- hosts: all
+  sudo: yes
+  sudo_user: vagrant
+  vars:
+    postgres_env:
+      POSTGRES_PASSWORD: rW41gWckkcR9Uer1
+  tasks:
+    - name: "vagrant docker data directory"
+      file: path="{{ item }}" state=directory
+      with_items:
+        - "/home/vagrant/docker"
+        - "/home/vagrant/docker/postgres"
+        - "/home/vagrant/docker/gitlab"
+
+    - name: "docker run postgres"
+      docker:
+        name: postgres
+        image: postgres
+        state: started
+        volumes:
+          - "/home/vagrant/docker/postgres:/var/lib/postgresql/data"
+        env: postgres_env
