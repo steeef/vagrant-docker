@@ -18,17 +18,10 @@
     - name: pip install dependencies
       pip: name="docker-py" state=latest
 
-    - name: "add vagrant to docker group"
-      user: >
-        name=vagrant
-        append=yes
-        groups=dockerroot
-        state=present
-
     - name: "docker daemon options"
       lineinfile: >
         dest=/etc/sysconfig/docker
-        line="OPTIONS='--selinux-enabled -G dockerroot'"
+        line="OPTIONS='--selinux-enabled -G vagrant'"
         state=present
         regexp="^OPTIONS="
 
