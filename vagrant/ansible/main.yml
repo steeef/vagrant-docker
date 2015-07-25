@@ -60,13 +60,9 @@
 
     # make sure to use the API version that Docker supports. EPEL has Docker
     # 1.6, so use API 1.18
-    - name: "docker run postgres"
+    - name: "docker run busybox"
       docker:
-        name: postgres
-        image: postgres
+        name: test
+        image: busybox
         state: started
-        volumes:
-          - "/home/vagrant/docker/postgres:/var/lib/postgresql/data"
-        env:
-          POSTGRES_PASSWORD: "{{ postgres_password }}"
         docker_api_version: "1.18"
