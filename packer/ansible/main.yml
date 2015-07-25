@@ -11,13 +11,6 @@
       changed_when: false
       register: kernel_release
 
-    - name: disable cowsay in ansible
-      lineinfile: >
-        dest=/etc/ansible/ansible.cfg
-        regexp='^#nocows = 1'
-        line='nocows = 1'
-        state=present
-
     - name: Ensure necessary packages are installed.
       yum: "pkg={{ item }} state=installed"
       with_items:
