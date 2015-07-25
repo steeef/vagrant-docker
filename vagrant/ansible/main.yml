@@ -13,8 +13,10 @@
         - docker
         - python-pip
 
+    # state=latest is necessary here otherwise there are issues using the
+    # docker-py module
     - name: pip install dependencies
-      pip: name="docker-py" state=present
+      pip: name="docker-py" state=latest
 
     - name: "add vagrant to docker group"
       user: >
@@ -49,8 +51,7 @@
   sudo: yes
   sudo_user: vagrant
   vars:
-    postgres_env:
-      POSTGRES_PASSWORD: rW41gWckkcR9Uer1
+      postgres_password: rW41gWckkcR9Uer1
   tasks:
     - name: "vagrant docker data directory"
       file: path="{{ item }}" state=directory
@@ -59,6 +60,8 @@
         - "/home/vagrant/docker/postgres"
         - "/home/vagrant/docker/gitlab"
 
+    # make sure to use the API version that Docker supports. EPEL has Docker
+    # 1.6, so use API 1.18
     - name: "docker run postgres"
       docker:
         name: postgres
@@ -66,4 +69,6 @@
         state: started
         volumes:
           - "/home/vagrant/docker/postgres:/var/lib/postgresql/data"
-        env: postgres_env
+        env:
+          POSTGRES_PASSWORD: "{{ postgres_password }}"
+        docker_api_version: "1.18"
