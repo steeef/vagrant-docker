@@ -48,8 +48,6 @@
 
 # let's do some docker
 - hosts: all
-  sudo: yes
-  sudo_user: vagrant
   vars:
       postgres_password: rW41gWckkcR9Uer1
   tasks:
