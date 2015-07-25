@@ -44,25 +44,3 @@
 
     - name: "timedatectl use ntp"
       command: /usr/bin/timedatectl set-ntp true
-
-
-# let's do some docker
-- hosts: all
-  vars:
-      postgres_password: rW41gWckkcR9Uer1
-  tasks:
-    - name: "vagrant docker data directory"
-      file: path="{{ item }}" state=directory
-      with_items:
-        - "/home/vagrant/docker"
-        - "/home/vagrant/docker/postgres"
-        - "/home/vagrant/docker/gitlab"
-
-    # make sure to use the API version that Docker supports. EPEL has Docker
-    # 1.6, so use API 1.18
-    - name: "docker run busybox"
-      docker:
-        name: test
-        image: busybox
-        state: started
-        docker_api_version: "1.18"
