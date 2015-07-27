@@ -14,6 +14,12 @@
 
     # make sure to use the API version that Docker supports. EPEL has Docker
     # 1.6, so use API 1.18
+    - name: "docker run redis"
+      docker:
+        name: redis
+        image: redis
+        state: started
+        docker_api_version: "1.18"
     - name: "docker run postgresql"
       docker:
         name: postgres
