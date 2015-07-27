@@ -4,6 +4,10 @@ Based on:
 https://github.com/bbirkinbine/packer-vagrant-centos-7-1503-01-x86_64-minimal
 https://github.com/bbirkinbine/vagrant-docker-host-centos-7
 
+Modify `vagrant/docker-compose.yml` to set up the docker images you want to
+run. Be sure to put volumes under the `/home/vagrant/docker` directory. More
+info here: https://docs.docker.com/compose/
+
 `cd packer` and run `make` to build the packer image. You can run `make clean` to
 remove any created Vagrant boxes and downloaded ISOs.
 
