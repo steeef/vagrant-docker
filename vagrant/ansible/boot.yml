@@ -1,5 +1,6 @@
 # let's do some docker
-- hosts: all
+- name: boot
+  hosts: all
   sudo: no
   vars:
       postgres_password: rW41gWckkcR9Uer1

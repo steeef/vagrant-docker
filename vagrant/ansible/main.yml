@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: initial provision
+  hosts: all
   sudo: yes
   tasks:
     - name: "yum update"
