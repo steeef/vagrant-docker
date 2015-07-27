@@ -2,28 +2,18 @@
 - name: docker
   hosts: all
   sudo: no
+  vars:
+    working_dir: /home/vagrant/docker
   tasks:
     - name: "vagrant docker data directory"
-      file: path="{{ item }}" state=directory
-      with_items:
-        - "/home/vagrant/docker"
-
-    - name: "mktemp for docker-compose file"
-      shell: /usr/bin/mktemp
-      register: mktemp
-      notify: mktemp remove
+      file: path="{{ working_dir }}" state=directory
 
     - name: "upload docker compose"
       copy:
         src: ../docker-compose.yml
-        dest: "{{ mktemp.stdout }}"
+        dest: "{{ working_dir }}/docker-compose.yml"
 
     - name: "run docker compose"
-      shell: /usr/bin/docker-compose up -d
+      shell: chdir="{{ working_dir }}" /usr/bin/docker-compose up -d
       environment:
-        COMPOSE_FILE: "{{ mktemp.stdout }}"
         COMPOSE_PROJECT_NAME: "ansible"
-
-  handlers:
-    - name: mktemp remove
-      file: path="{{ mktemp.stdout }}" state=absent
