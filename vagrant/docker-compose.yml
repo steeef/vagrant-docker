@@ -1,0 +1,25 @@
+redis:
+  image: redis:latest
+
+postgresql:
+  image: sameersbn/postgresql:9.4-2
+  environment:
+    - DB_USER=gitlab
+    - DB_PASS=rW41gWckkcR9Uer1
+    - DB_NAME=gitlab
+  volumes:
+    - /home/vagrant/docker/postgres:/var/lib/postgresql
+
+gitlab:
+  image: sameersbn/gitlab:7.13.1
+  links:
+    - redis:redisio
+    - postgresql:postgresql
+  ports:
+    - "10080:80"
+    - "10022:22"
+  environment:
+    - GITLAB_PORT=10080
+    - GITLAB_SSH_PORT=10022
+  volumes:
+    - /home/vagrant/docker/gitlab:/home/git/data

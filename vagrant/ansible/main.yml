@@ -17,7 +17,10 @@
     # state=latest is necessary here otherwise there are issues using the
     # docker-py module
     - name: pip install dependencies
-      pip: name="docker-py" state=latest
+      pip: name="{{ item.name }}" state="{{ item.state }}"
+      with_items:
+        - { name: 'docker-py', state: 'latest' }
+        - { name: 'docker-compose', state: 'present' }
 
     - name: "docker daemon options"
       lineinfile: >

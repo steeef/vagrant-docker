@@ -1,54 +1,29 @@
 # let's do some docker
-- name: boot
+- name: docker
   hosts: all
   sudo: no
-  vars:
-      postgres_user: gitlab
-      postgres_password: rW41gWckkcR9Uer1
-      postgres_database: gitlab
   tasks:
     - name: "vagrant docker data directory"
       file: path="{{ item }}" state=directory
       with_items:
         - "/home/vagrant/docker"
-        - "/home/vagrant/docker/postgres"
-        - "/home/vagrant/docker/gitlab"
 
-    # make sure to use the API version that Docker supports. EPEL has Docker
-    # 1.6, so use API 1.18
-    - name: "docker run redis"
-      docker:
-        name: redis
-        image: redis
-        state: started
-        docker_api_version: "1.18"
-    - name: "docker run postgresql"
-      docker:
-        name: postgres
-        image: 'sameersbn/postgresql'
-        state: started
-        docker_api_version: "1.18"
-        volumes:
-          - "/home/vagrant/docker/postgres:/var/lib/postgresql"
-        env:
-          DB_NAME: "{{ postgres_database }}"
-          DB_USER: "{{ postgres_user }}"
-          DB_PASS: "{{ postgres_password }}"
+    - name: "mktemp for docker-compose file"
+      shell: /usr/bin/mktemp
+      register: mktemp
+      notify: mktemp remove
 
-    - name: "docker run gitlab"
-      docker:
-        name: gitlab
-        image: 'sameersbn/gitlab'
-        state: started
-        docker_api_version: "1.18"
-        links:
-          - "postgres:postgresql"
-          - "redis:redisio"
-        ports:
-          - "10022:22"
-          - "10080:80"
-        volumes:
-          - "/home/vagrant/docker/gitlab:/home/git/data"
-        env:
-          GITLAB_PORT: 10080
-          GITLAB_SSH_PORT: 10022
+    - name: "upload docker compose"
+      copy:
+        src: ../docker-compose.yml
+        dest: "{{ mktemp.stdout }}"
+
+    - name: "run docker compose"
+      shell: /usr/bin/docker-compose up -d
+      environment:
+        COMPOSE_FILE: "{{ mktemp.stdout }}"
+        COMPOSE_PROJECT_NAME: "ansible"
+
+  handlers:
+    - name: mktemp remove
+      file: path="{{ mktemp.stdout }}" state=absent
