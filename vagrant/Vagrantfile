@@ -80,7 +80,7 @@ Vagrant.configure(2) do |config|
     main.playbook = "ansible/main.yml"
   end
   # Run on every boot
-  config.vm.provision "ansible", run: "always" do |boot|
-    boot.playbook = "ansible/boot.yml"
+  config.vm.provision "ansible", run: "always" do |docker|
+    docker.playbook = "ansible/docker.yml"
   end
 end
