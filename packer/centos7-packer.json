@@ -70,9 +70,17 @@
     "post-processors": [
         {
             "type":                    "vagrant",
-            "output":                  "../vagrant/packer-vagrant-centos-7-1503-01-minimal.box",
+            "output":                  "../vagrant/packer-vagrant-centos-7-1503-01-minimal-virtualbox.box",
             "compression_level":       9,
-            "keep_input_artifact":     false
+            "keep_input_artifact":     false,
+            "only":                    ["packer-vagrant-centos-7-1503-01-minimal-vbox"]
+        },
+        {
+            "type":                    "vagrant",
+            "output":                  "../vagrant/packer-vagrant-centos-7-1503-01-minimal-vmware.box",
+            "compression_level":       9,
+            "keep_input_artifact":     false,
+            "only":                    ["packer-vagrant-centos-7-1503-01-minimal-vmware"]
         }
     ]
 }
