@@ -1,7 +1,7 @@
 ---
 - name: Add VMWare tools repository.
   template:
-    src: vmware-tools.repo.j2
+    src: templates/vmware-tools.repo.j2
     dest: /etc/yum.repos.d/vmware-tools.repo
 
 - name: Import VMWare tools GPG keys.
@@ -21,7 +21,7 @@
 
 - name: Add vmhgfs module (RHEL 6).
   template:
-    src: vmhgfs.modules.j2
+    src: templates/vmhgfs.modules.j2
     dest: /etc/sysconfig/modules/vmhgfs.modules
     mode: 0755
   when: ansible_distribution_major_version <= 6
@@ -44,7 +44,7 @@
 - name: Mount VMware tools.
   mount:
     name: /tmp/vmfusion
-    src: /home/vagrant/linux.iso
+    src: /root/linux.iso
     fstype: iso9660
     state: mounted
   when: ansible_distribution_major_version >= 7
@@ -60,7 +60,7 @@
 - name: Unmount VMware tools.
   mount:
     name: /tmp/vmfusion
-    src: /home/vagrant/linux.iso
+    src: /root/linux.iso
     fstype: iso9660
     state: unmounted
   when: ansible_distribution_major_version >= 7
